@@ -45,6 +45,7 @@ This project follows two lightweight, AI-agent-friendly processes:
 ## Requirements
 
 - Python `>=3.10`
+- [`uv`](https://docs.astral.sh/uv/) (Python package/dependency manager)
 - `make`
 - For cloud mode: `gcloud` CLI, Terraform `>=1.5`, and a GCP project
 
@@ -69,7 +70,7 @@ curl -X POST localhost:8080/query \
 Run the toy evaluation set:
 
 ```bash
-RAGONGCP_BACKEND=fake .venv/bin/python scripts/eval.py
+RAGONGCP_BACKEND=fake uv run python scripts/eval.py
 ```
 
 ## Quickstart (real GCP)
@@ -97,13 +98,13 @@ RAGONGCP_BACKEND=fake .venv/bin/python scripts/eval.py
 4. Ingest data:
 
    ```bash
-   .venv/bin/python -m ragongcp.ingestion.run --profile bc_real_estate
+   uv run python -m ragongcp.ingestion.run --profile bc_real_estate
    ```
 
 5. Serve API:
 
    ```bash
-   .venv/bin/uvicorn ragongcp.api.main:app --port 8080
+   uv run uvicorn ragongcp.api.main:app --port 8080
    ```
 
 For Cloud Run deployment details, see [docs/deployment.md](docs/deployment.md).

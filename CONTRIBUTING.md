@@ -10,6 +10,8 @@ make lint
 make test
 ```
 
+`make setup` uses `uv` to create/manage `.venv` and install project dependencies.
+
 Run the app locally:
 
 ```bash

@@ -13,7 +13,7 @@ real estate assistant. See [docs/architecture.md](docs/architecture.md).
 ## Commands
 
 ```bash
-make setup     # venv + install (.[dev])
+make setup     # uv sync --extra dev (creates/updates .venv)
 make test      # offline unit tests (no GCP creds)  — must pass before done
 make lint      # ruff                                — must pass before done
 make run       # API on :8080 with the fake backend (RAGONGCP_BACKEND=fake)
@@ -21,7 +21,7 @@ make ingest    # ingest active profile (needs GCP creds)
 make tf-validate
 ```
 
-Run a single test: `.venv/bin/pytest tests/test_rag_service.py -q`.
+Run a single test: `uv run pytest tests/test_rag_service.py -q`.
 
 ## Architecture map
 

@@ -68,7 +68,7 @@ Before serving production traffic:
 Example:
 
 ```bash
-.venv/bin/python -m ragongcp.ingestion.run --profile bc_real_estate
+uv run python -m ragongcp.ingestion.run --profile bc_real_estate
 ```
 
 ## 6) Verify deployment

@@ -7,12 +7,14 @@ Common issues and fixes when running RAGonGCP.
 Possible causes:
 
 - unsupported Python version
+- `uv` is not installed or too old
 - local virtual environment corruption
 
 Try:
 
 ```bash
 rm -rf .venv
+uv --version
 make setup
 ```
 

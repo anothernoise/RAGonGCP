@@ -6,12 +6,15 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 
+# Install uv package manager.
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 # Install dependencies first for better layer caching.
 COPY pyproject.toml README.md ./
 COPY src ./src
-RUN pip install --no-cache-dir .
+RUN uv sync --no-dev
 
 COPY config ./config
 
 EXPOSE 8080
-CMD ["sh", "-c", "uvicorn ragongcp.api.main:app --host 0.0.0.0 --port ${PORT}"]
+CMD ["sh", "-c", "uv run uvicorn ragongcp.api.main:app --host 0.0.0.0 --port ${PORT}"]
