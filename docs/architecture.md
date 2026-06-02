@@ -7,21 +7,44 @@ engagement by adding a profile + ingestion sources, not by editing core code.
 
 ## Layers
 
+```mermaid
+flowchart TB
+  http["HTTP clients"] --> api["api/ (FastAPI: /query, /ingest, /healthz)"]
+
+  subgraph core["core application"]
+    pipeline["pipeline/rag_service.py\nRagService (retrieve -> generate)"]
+    domain["domain/ ports\nRetriever | Ingestor | Generator"]
+    api --> pipeline --> domain
+  end
+
+  subgraph adapters["adapters"]
+    vre["vertex_rag_engine (default)"]
+    vs["vertex_search*"]
+    cv["custom_vector*"]
+    fake["fake"]
+  end
+
+  subgraph generation["generation"]
+    gemini["gemini"]
+    echo["echo (offline)"]
+  end
+
+  subgraph ingestion["ingestion sources"]
+    gcs["gcs"]
+    drive["drive (Workspace)"]
+    web["web (allowlisted)"]
+  end
+
+  domain --> vre
+  domain --> vs
+  domain --> cv
+  domain --> fake
+  pipeline --> gemini
+  pipeline --> echo
+  ingestion --> pipeline
 ```
-            ┌──────────────────────────────────────────────────────────┐
- HTTP  ───► │  api/ (FastAPI: /query /ingest /healthz)                  │
-            ├──────────────────────────────────────────────────────────┤
-            │  pipeline/rag_service.py   RagService(retrieve→generate)  │  ← core
-            ├───────────────┬───────────────────────┬──────────────────┤
-            │ domain/ (ports)│ Retriever  Ingestor   Generator          │
-            ├───────────────┴───────────────────────┴──────────────────┤
- adapters/  │ vertex_rag_engine ◄ default │ vertex_search* │ custom_vector* │ fake │
- generation/│ gemini  │ echo (offline)                                   │
-            ├──────────────────────────────────────────────────────────┤
- ingestion/ │ sources: gcs · drive (Workspace) · web (allowlisted)      │
-            └──────────────────────────────────────────────────────────┘
-                              (* = stub in this POC)
-```
+
+\* `vertex_search` and `custom_vector` are stubs in this POC.
 
 ## Key flows
 
