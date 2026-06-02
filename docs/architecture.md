@@ -9,7 +9,17 @@ engagement by adding a profile + ingestion sources, not by editing core code.
 
 ```mermaid
 flowchart TB
-  http["HTTP clients"] --> api["api/ (FastAPI: /query, /ingest, /healthz)"]
+  subgraph clients["clients / entry points"]
+    ext_http["external HTTP client"]
+    sample_agent["sample_agent.py (CLI demo)"]
+    chainlit["Chainlit demo app"]
+    e2e["tests/e2e (real HTTP tests)"]
+  end
+
+  ext_http --> api["api/ (FastAPI: /query, /ingest, /healthz)"]
+  sample_agent --> api
+  chainlit --> api
+  e2e --> api
 
   subgraph core["core application"]
     pipeline["pipeline/rag_service.py\nRagService (retrieve -> generate)"]
@@ -76,6 +86,23 @@ citations mapped back to source chunks (`generation/prompt.py`).
 `collect()`s `Document`s (GCS objects, Drive files, or web pages staged to GCS),
 then `Ingestor.upsert` imports them into the corpus.
 
+```mermaid
+sequenceDiagram
+  participant U as User (Chainlit/CLI/HTTP)
+  participant A as FastAPI /query
+  participant R as Retriever
+  participant G as Generator
+  participant C as Cost Tracker (optional)
+
+  U->>A: question (+ optional top_k)
+  A->>R: retrieve(Query)
+  R-->>A: chunks
+  A->>G: generate(question, chunks)
+  G-->>A: answer + citations (+ usage metadata)
+  A->>C: record query cost event (if enabled)
+  A-->>U: answer + citations + model
+```
+
 ## Observability
 
 Runtime operations should be observable across API, retrieval, generation, and
@@ -101,6 +128,23 @@ Recommended governance:
 - budgets and forecast threshold alerts with anomaly notifications
 - cost KPIs such as cost per query, cost per 1k queries, and profile-level spend trends
 - weekly review cadence linking cost movement to architecture/config decisions
+
+Cost tracking is intentionally optional:
+
+- `RAGONGCP_COST_TRACKING_ENABLED=false` keeps runtime behavior unchanged (no-op tracker)
+- sink is selectable (`log` or `bigquery`) through env/Terraform
+- observability export failures must never fail user queries (fail-open telemetry)
+
+## Demo and testing architecture
+
+Demo and validation paths are first-class:
+
+- **Chainlit demo app** (`examples/chainlit_app.py`) for interactive stakeholder demos
+- **CLI sample agent** (`scripts/sample_agent.py`) for quick terminal-based walkthroughs
+- **Offline E2E tests** (`tests/e2e/`) that boot the real API server and validate end-to-end HTTP behavior
+
+These clients exercise the same API contract (`/query`, `/ingest`, `/healthz`) so
+demo behavior and automated validation remain aligned.
 
 ## Configuration
 

@@ -78,3 +78,4 @@ copy `template.md` to the next number by hand.
 | [0005](0005-config-driven-use-case-profiles.md) | Config-driven use-case profiles (layered YAML) | Accepted |
 | [0006](0006-adopt-adr-and-spec-driven-development.md) | Adopt ADRs and spec-driven development | Accepted |
 | [0007](0007-establish-cost-tracking-and-finops-guardrails.md) | Establish cost tracking and FinOps guardrails | Proposed |
+| [0008](0008-adopt-chainlit-for-demo-chat-ui.md) | Adopt Chainlit for demo chat UI | Proposed |

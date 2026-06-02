@@ -28,6 +28,7 @@ Terraform for baseline cloud setup.
 - Project constitution: [.specify/memory/constitution.md](.specify/memory/constitution.md)
 - Working with AI agents: [CLAUDE.md](CLAUDE.md)
 - Deployment guide: [docs/deployment.md](docs/deployment.md)
+- Demo and testing guide: [docs/demo-and-testing.md](docs/demo-and-testing.md)
 - Troubleshooting: [docs/troubleshooting.md](docs/troubleshooting.md)
 - Contributing: [CONTRIBUTING.md](CONTRIBUTING.md)
 - Security policy: [SECURITY.md](SECURITY.md)
@@ -71,6 +72,54 @@ Run the toy evaluation set:
 
 ```bash
 RAGONGCP_BACKEND=fake uv run python scripts/eval.py
+```
+
+Run offline end-to-end API tests:
+
+```bash
+make test-e2e
+```
+
+Run a sample interactive agent (ingests sample docs, then queries):
+
+```bash
+uv run python scripts/sample_agent.py
+```
+
+Agent options:
+
+```bash
+# Query existing corpus without ingesting local samples
+uv run python scripts/sample_agent.py --skip-ingest
+
+# Point to a deployed API and custom doc file
+uv run python scripts/sample_agent.py \
+  --api-url https://<your-cloud-run-url> \
+  --docs examples/sample_docs.json
+```
+
+Run a Chainlit demo UI:
+
+```bash
+# Terminal 1: start API
+make run
+
+# Terminal 2: start Chainlit app
+make demo-chainlit
+```
+
+Then open the local Chainlit URL shown in the terminal. The demo supports:
+
+- `/ingest` to load sample docs (`examples/sample_docs.json`)
+- `/help` for usage hints
+
+Optional environment variables for the Chainlit demo:
+
+```bash
+RAG_API_URL=http://localhost:8080
+RAG_DEMO_DOCS=examples/sample_docs.json
+RAG_DEMO_AUTO_INGEST=true
+RAG_DEMO_TOP_K=8
 ```
 
 ## Quickstart (real GCP)

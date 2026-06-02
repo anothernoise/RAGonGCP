@@ -29,3 +29,6 @@ infra/terraform/.terraform/
 .DS_Store
 .idea/
 .vscode/
+
+# Demo UI generated files
+.chainlit/

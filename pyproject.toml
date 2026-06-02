@@ -28,6 +28,9 @@ dev = [
     "pytest-asyncio>=0.23",
     "ruff>=0.4",
 ]
+demo = [
+    "chainlit>=2.0",
+]
 
 [project.scripts]
 ragongcp-ingest = "ragongcp.ingestion.run:main"

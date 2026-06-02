@@ -1,0 +1,17 @@
+[
+  {
+    "uri": "sample://docs/disclosure-form",
+    "title": "Disclosure of Representation",
+    "text": "In BC, a real estate licensee should provide the Disclosure of Representation in Trading Services form at the earliest reasonable opportunity so consumers understand client and non-client relationships."
+  },
+  {
+    "uri": "sample://docs/agency-duties",
+    "title": "Agency Duties under RESA",
+    "text": "Brokerages and licensees owe clients duties of loyalty, confidentiality, avoiding conflicts of interest, and full disclosure under the Real Estate Services Act."
+  },
+  {
+    "uri": "sample://docs/multiple-representation",
+    "title": "Multiple Representation Basics",
+    "text": "When multiple representation arises, additional disclosures and informed consent are required, and limits may apply to what advice can be provided to each client."
+  }
+]

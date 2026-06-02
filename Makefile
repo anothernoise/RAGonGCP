@@ -1,4 +1,4 @@
-.PHONY: help setup test lint run ingest tf-init tf-validate tf-plan docker-build
+.PHONY: help setup test test-e2e lint run ingest demo-chainlit tf-init tf-validate tf-plan docker-build
 
 VENV ?= .venv
 UV ?= uv
@@ -13,6 +13,9 @@ setup: ## Create .venv and install deps via uv
 test: ## Run unit tests (no GCP creds needed)
 	$(UV) run pytest -q
 
+test-e2e: ## Run offline end-to-end API tests
+	$(UV) run pytest -q tests/e2e
+
 lint: ## Lint with ruff
 	$(UV) run ruff check src tests
 
@@ -21,6 +24,9 @@ run: ## Run the API locally with the offline fake backend
 
 ingest: ## Ingest the active profile's sources (needs GCP creds)
 	$(UV) run python -m ragongcp.ingestion.run --profile $(PROFILE)
+
+demo-chainlit: ## Run Chainlit demo UI against the API
+	$(UV) run --extra demo chainlit run examples/chainlit_app.py --watch
 
 tf-init: ## terraform init
 	cd infra/terraform && terraform init
