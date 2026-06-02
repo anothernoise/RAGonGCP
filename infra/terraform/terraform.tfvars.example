@@ -1,0 +1,7 @@
+project_id = "your-gcp-project-id"
+region     = "us-central1"
+profile    = "bc_real_estate"
+
+# Optional: deploy the API to Cloud Run once you have built an image.
+# deploy_cloud_run = true
+# container_image  = "us-central1-docker.pkg.dev/your-project/ragongcp/ragongcp:latest"

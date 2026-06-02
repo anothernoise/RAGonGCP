@@ -1,0 +1,50 @@
+[project]
+name = "ragongcp"
+version = "0.1.0"
+description = "RAGonGCP — reusable enterprise RAG accelerator on Google Cloud (Vertex AI / Gemini)"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Dmitry Shirokov" }]
+license = { text = "MIT" }
+
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.29",
+    "pydantic>=2.6",
+    "pydantic-settings>=2.2",
+    "pyyaml>=6.0",
+    "httpx>=0.27",
+    # Google Cloud / Vertex AI. Kept as runtime deps; not needed to run the unit tests.
+    "google-cloud-aiplatform>=1.71",
+    "google-cloud-storage>=2.16",
+    "google-genai>=0.3",
+    "google-api-python-client>=2.120",
+    "google-auth>=2.29",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.4",
+]
+
+[project.scripts]
+ragongcp-ingest = "ragongcp.ingestion.run:main"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]

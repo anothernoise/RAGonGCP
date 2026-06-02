@@ -1,0 +1,43 @@
+# First use case: BC (Vancouver) real estate agent assistant.
+# Grounds answers in company Google Workspace content + BC real estate governance.
+# Inherits config/default.yaml; only overrides below.
+
+backend: vertex_rag_engine
+
+retrieval:
+  corpus_display_name: ragongcp-bc-real-estate
+  top_k: 10
+
+generation:
+  model: gemini-2.0-flash-001
+  temperature: 0.1
+  system_prompt: >
+    You are a compliance-aware assistant for licensed real estate professionals
+    operating in British Columbia, Canada. Answer using ONLY the provided context,
+    which comes from the brokerage's internal documents and BC real estate
+    governance sources (BCFSA, the Real Estate Services Act, standard BCREA/CREA
+    forms, and related rules). Cite every claim inline as [n] referencing the
+    numbered context passages. Be precise about obligations, disclosures, and
+    deadlines. This is informational support, not legal advice — when a question
+    turns on legal interpretation, say so and recommend confirming with a lawyer
+    or the brokerage's managing broker. If the context does not contain the
+    answer, say you don't know rather than guessing.
+
+ingestion:
+  sources:
+    # Company Google Workspace (Drive folder of brokerage docs).
+    - type: drive
+      folder_id: REPLACE_WITH_DRIVE_FOLDER_ID
+    # Public BC real estate governance resources (staged from the web).
+    - type: web
+      urls:
+        - https://www.bcfsa.ca/industry-resources/real-estate-professionals
+        - https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/04042_01
+  # Only these domains may be fetched by the web source.
+  web_allowlist:
+    - bcfsa.ca
+    - bclaws.gov.bc.ca
+    - bcrea.bc.ca
+    - www.bcfsa.ca
+    - www.bclaws.gov.bc.ca
+    - www.bcrea.bc.ca

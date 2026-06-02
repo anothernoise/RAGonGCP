@@ -1,0 +1,29 @@
+# Base configuration. Every profile inherits from this and overrides as needed.
+# Values here are sensible defaults for any enterprise RAG use case on GCP.
+
+backend: vertex_rag_engine        # vertex_rag_engine | vertex_search | custom_vector | fake
+
+# Retrieval-layer defaults (passed to the active backend adapter).
+retrieval:
+  corpus_display_name: ragongcp-default
+  embedding_model: text-embedding-005
+  top_k: 8
+  vector_distance_threshold: 0.5
+  chunk_size: 1024
+  chunk_overlap: 200
+
+# Generation (Gemini) defaults.
+generation:
+  model: gemini-2.0-flash-001
+  temperature: 0.2
+  max_output_tokens: 2048
+  # System prompt is intentionally generic in the base; profiles specialize it.
+  system_prompt: >
+    You are an enterprise assistant. Answer the user's question using ONLY the
+    provided context. Cite sources inline as [n] matching the numbered context
+    passages. If the context does not contain the answer, say you don't know.
+
+# Ingestion source defaults. Profiles declare which sources are active.
+ingestion:
+  sources: []
+  web_allowlist: []
