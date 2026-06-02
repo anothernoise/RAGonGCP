@@ -13,6 +13,7 @@ from fastapi import FastAPI
 
 from ragongcp.api.routes import router
 from ragongcp.config import ProfileConfig, Settings, get_profile, get_settings
+from ragongcp.observability.cost_tracking import CostTracker, build_cost_tracker
 from ragongcp.pipeline.rag_service import RagService, build_default
 
 
@@ -20,6 +21,7 @@ def create_app(
     settings: Settings | None = None,
     profile: ProfileConfig | None = None,
     service: RagService | None = None,
+    cost_tracker: CostTracker | None = None,
 ) -> FastAPI:
     settings = settings or get_settings()
     profile = profile or get_profile(settings)
@@ -33,6 +35,7 @@ def create_app(
     app.state.profile = profile
     # `service` is injectable for tests; otherwise built lazily from config on first use.
     app.state.service = service or _LazyService(settings, profile)
+    app.state.cost_tracker = cost_tracker or build_cost_tracker(settings)
     app.include_router(router)
     return app
 

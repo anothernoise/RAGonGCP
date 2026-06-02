@@ -57,6 +57,25 @@ terraform apply
 
 Terraform injects `RAGONGCP_*` environment variables into the Cloud Run service.
 
+### Optional: enable FinOps cost tracking
+
+Cost tracking is optional and disabled by default.
+
+To enable:
+
+```hcl
+enable_cost_tracking     = true
+cost_tracking_sink       = "log"      # or "bigquery"
+cost_tracking_bq_dataset = "finops"   # required for bigquery sink
+cost_tracking_bq_table   = "rag_cost_events"
+```
+
+Notes:
+
+- `log` sink emits structured cost events to application logs.
+- `bigquery` sink writes events to BigQuery; ensure dataset/table exists and
+  BigQuery API + IAM permissions are in place.
+
 ## 5) Configure profile and ingest data
 
 Before serving production traffic:

@@ -1,6 +1,6 @@
 # Enable the Google Cloud APIs the accelerator needs.
 locals {
-  services = [
+  base_services = [
     "aiplatform.googleapis.com",     # Vertex AI (RAG Engine, Gemini, embeddings)
     "storage.googleapis.com",        # GCS staging bucket
     "run.googleapis.com",            # Cloud Run API service
@@ -9,6 +9,12 @@ locals {
     "iam.googleapis.com",
     "cloudresourcemanager.googleapis.com",
   ]
+  services = concat(
+    local.base_services,
+    var.enable_cost_tracking && var.cost_tracking_sink == "bigquery"
+      ? ["bigquery.googleapis.com"]
+      : []
+  )
 }
 
 resource "google_project_service" "enabled" {

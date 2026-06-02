@@ -33,6 +33,30 @@ variable "deploy_cloud_run" {
   default     = false
 }
 
+variable "enable_cost_tracking" {
+  type        = bool
+  description = "Enable optional FinOps cost tracking events in the API runtime."
+  default     = false
+}
+
+variable "cost_tracking_sink" {
+  type        = string
+  description = "Cost tracking sink: log or bigquery."
+  default     = "log"
+}
+
+variable "cost_tracking_bq_dataset" {
+  type        = string
+  description = "BigQuery dataset for cost tracking events when sink=bigquery."
+  default     = ""
+}
+
+variable "cost_tracking_bq_table" {
+  type        = string
+  description = "BigQuery table for cost tracking events when sink=bigquery."
+  default     = "rag_cost_events"
+}
+
 variable "labels" {
   type        = map(string)
   description = "Labels applied to created resources."

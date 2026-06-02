@@ -14,7 +14,7 @@ from __future__ import annotations
 import copy
 from functools import lru_cache
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import yaml
 from pydantic import BaseModel, Field
@@ -36,6 +36,11 @@ class Settings(BaseSettings):
     staging_bucket: str = ""
     # Optional explicit backend override; when empty, the profile yaml decides.
     backend: str = ""
+    # Optional FinOps/cost-tracking controls.
+    cost_tracking_enabled: bool = False
+    cost_tracking_sink: Literal["log", "bigquery"] = "log"
+    cost_tracking_bq_dataset: str = ""
+    cost_tracking_bq_table: str = "rag_cost_events"
 
 
 class RetrievalConfig(BaseModel):

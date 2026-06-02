@@ -35,6 +35,18 @@ flowchart TB
     web["web (allowlisted)"]
   end
 
+  subgraph observability["observability"]
+    logs["Cloud Logging\n(app + platform logs)"]
+    metrics["Cloud Monitoring\n(latency, errors, saturation)"]
+    traces["Distributed tracing\n(request path + bottlenecks)"]
+  end
+
+  subgraph finops["finops / cost controls"]
+    billing["Cloud Billing export -> BigQuery\n(cost truth by service/SKU/labels)"]
+    budgets["Budgets + forecast alerts\nthreshold + anomaly notifications"]
+    unit["RAG unit economics\ncost/query, cost/profile, token trends"]
+  end
+
   domain --> vre
   domain --> vs
   domain --> cv
@@ -42,6 +54,14 @@ flowchart TB
   pipeline --> gemini
   pipeline --> echo
   ingestion --> pipeline
+  api --> logs
+  pipeline --> metrics
+  pipeline --> traces
+  vre --> billing
+  gemini --> billing
+  api --> billing
+  billing --> unit
+  budgets --> unit
 ```
 
 \* `vertex_search` and `custom_vector` are stubs in this POC.
@@ -55,6 +75,32 @@ citations mapped back to source chunks (`generation/prompt.py`).
 **Ingest:** `ingestion/run.py` builds `Source`s from the profile, each
 `collect()`s `Document`s (GCS objects, Drive files, or web pages staged to GCS),
 then `Ingestor.upsert` imports them into the corpus.
+
+## Observability
+
+Runtime operations should be observable across API, retrieval, generation, and
+ingestion:
+
+- **Logs:** structured application and platform logs for debugging and incident response.
+- **Metrics:** request volume, latency, error rate, ingestion throughput, and saturation.
+- **Tracing:** end-to-end request timing across retrieve/generate steps to isolate bottlenecks.
+- **Alerts:** SLO/SLA-oriented alerting on latency, error budget burn, and ingestion failures.
+
+## FinOps and cost tracking
+
+Follow a two-layer model (see ADR-0007):
+
+1. **Billing truth layer** — Cloud Billing export to BigQuery for invoice-grade
+   cost data by service/SKU/project/label.
+2. **Workload attribution layer** — request-level RAG telemetry (model, tokens
+   where available, latency, profile/backend) for unit economics.
+
+Recommended governance:
+
+- standardized labels/tags (`env`, `service`, `profile`, `team`, `cost_center`)
+- budgets and forecast threshold alerts with anomaly notifications
+- cost KPIs such as cost per query, cost per 1k queries, and profile-level spend trends
+- weekly review cadence linking cost movement to architecture/config decisions
 
 ## Configuration
 

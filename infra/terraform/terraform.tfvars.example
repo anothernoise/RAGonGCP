@@ -5,3 +5,9 @@ profile    = "bc_real_estate"
 # Optional: deploy the API to Cloud Run once you have built an image.
 # deploy_cloud_run = true
 # container_image  = "us-central1-docker.pkg.dev/your-project/ragongcp/ragongcp:latest"
+
+# Optional: enable FinOps cost tracking in the API runtime.
+# enable_cost_tracking    = true
+# cost_tracking_sink      = "log" # "log" or "bigquery"
+# cost_tracking_bq_dataset = "finops"
+# cost_tracking_bq_table   = "rag_cost_events"

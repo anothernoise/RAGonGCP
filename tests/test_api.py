@@ -7,12 +7,20 @@ from ragongcp.generation.echo import EchoGenerator
 from ragongcp.pipeline.rag_service import RagService
 
 
-def _client() -> TestClient:
+class _SpyCostTracker:
+    def __init__(self):
+        self.events = []
+
+    def record_query(self, event):
+        self.events.append(event)
+
+
+def _client(cost_tracker=None) -> TestClient:
     profile = ProfileConfig()
     profile.backend = "fake"
     settings = Settings(profile="bc_real_estate", backend="fake")
     service = RagService(retriever=FakeBackend(), generator=EchoGenerator())
-    app = create_app(settings=settings, profile=profile, service=service)
+    app = create_app(settings=settings, profile=profile, service=service, cost_tracker=cost_tracker)
     return TestClient(app)
 
 
@@ -39,3 +47,14 @@ def test_ingest_endpoint():
     )
     assert resp.status_code == 200
     assert resp.json()["imported"] == 1
+
+
+def test_query_endpoint_records_cost_event():
+    tracker = _SpyCostTracker()
+    resp = _client(cost_tracker=tracker).post("/query", json={"question": "agent duties under RESA"})
+    assert resp.status_code == 200
+    assert len(tracker.events) == 1
+    event = tracker.events[0]
+    assert event["status"] == "ok"
+    assert event["backend"] == "fake"
+    assert event["event_type"] == "query"

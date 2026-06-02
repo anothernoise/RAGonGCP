@@ -22,3 +22,24 @@ def test_env_backend_override():
     settings = Settings(profile="bc_real_estate", backend="fake")
     profile = get_profile(settings)
     assert profile.backend == "fake"
+
+
+def test_cost_tracking_settings_defaults():
+    settings = Settings()
+    assert settings.cost_tracking_enabled is False
+    assert settings.cost_tracking_sink == "log"
+    assert settings.cost_tracking_bq_dataset == ""
+    assert settings.cost_tracking_bq_table == "rag_cost_events"
+
+
+def test_cost_tracking_settings_overrides():
+    settings = Settings(
+        cost_tracking_enabled=True,
+        cost_tracking_sink="bigquery",
+        cost_tracking_bq_dataset="finops",
+        cost_tracking_bq_table="cost_events",
+    )
+    assert settings.cost_tracking_enabled is True
+    assert settings.cost_tracking_sink == "bigquery"
+    assert settings.cost_tracking_bq_dataset == "finops"
+    assert settings.cost_tracking_bq_table == "cost_events"

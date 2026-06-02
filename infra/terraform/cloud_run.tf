@@ -29,6 +29,22 @@ resource "google_cloud_run_v2_service" "api" {
         name  = "RAGONGCP_STAGING_BUCKET"
         value = google_storage_bucket.staging.name
       }
+      env {
+        name  = "RAGONGCP_COST_TRACKING_ENABLED"
+        value = lower(tostring(var.enable_cost_tracking))
+      }
+      env {
+        name  = "RAGONGCP_COST_TRACKING_SINK"
+        value = var.cost_tracking_sink
+      }
+      env {
+        name  = "RAGONGCP_COST_TRACKING_BQ_DATASET"
+        value = var.cost_tracking_bq_dataset
+      }
+      env {
+        name  = "RAGONGCP_COST_TRACKING_BQ_TABLE"
+        value = var.cost_tracking_bq_table
+      }
 
       ports {
         container_port = 8080

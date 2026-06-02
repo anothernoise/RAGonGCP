@@ -55,3 +55,4 @@ class Answer(BaseModel):
     citations: list[Citation] = Field(default_factory=list)
     chunks: list[Chunk] = Field(default_factory=list)
     model: str | None = None
+    usage: dict[str, int | float | str] = Field(default_factory=dict)

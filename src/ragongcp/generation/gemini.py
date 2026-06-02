@@ -7,6 +7,8 @@ those markers back to source chunks as first-class Citations.
 
 from __future__ import annotations
 
+from typing import Any
+
 from ragongcp.config import GenerationConfig, Settings
 from ragongcp.domain.models import Answer, Chunk
 from ragongcp.generation.prompt import build_prompt, extract_citations
@@ -55,4 +57,31 @@ class GeminiGenerator:
             citations=extract_citations(text, chunks),
             chunks=chunks,
             model=self.generation.model,
+            usage=_extract_usage_metadata(response),
         )
+
+
+def _extract_usage_metadata(response: Any) -> dict[str, int | float | str]:
+    """Best-effort extraction of token usage metadata from SDK responses."""
+    usage = getattr(response, "usage_metadata", None)
+    if usage is None:
+        return {}
+
+    fields = [
+        "prompt_token_count",
+        "candidates_token_count",
+        "total_token_count",
+        "input_token_count",
+        "output_token_count",
+        "thoughts_token_count",
+    ]
+
+    values: dict[str, int | float | str] = {}
+    for field in fields:
+        if isinstance(usage, dict):
+            raw = usage.get(field)
+        else:
+            raw = getattr(usage, field, None)
+        if isinstance(raw, (int, float, str)):
+            values[field] = raw
+    return values

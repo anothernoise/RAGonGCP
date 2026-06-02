@@ -116,6 +116,7 @@ For Cloud Run deployment details, see [docs/deployment.md](docs/deployment.md).
 - `.env` / `RAGONGCP_*`: deployment environment settings
 - `RAGONGCP_PROFILE=<name>`: select active use case
 - `RAGONGCP_BACKEND=<backend>`: optional backend override at runtime
+- `RAGONGCP_COST_TRACKING_*`: optional FinOps telemetry controls (disabled by default)
 
 ## API endpoints
 
